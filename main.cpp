@@ -1,7 +1,7 @@
 #include "vex.h"
 
 using namespace vex;
-competition Competition;
+
 
 /*---------------------------------------------------------------------------*/
 /*                             VEXcode Config                                */
@@ -339,6 +339,12 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+    LeftMotor.setStopping(coast);
+  LeftMotor2.setStopping(coast);
+  LeftMotor3.setStopping(coast);
+  RightMotor.setStopping(coast);
+  RightMotor2.setStopping(coast);
+  RightMotor3.setStopping(coast);
   Controller.ButtonR1.pressed(onR1);
   Controller.ButtonR2.pressed(onR2);
   Controller.ButtonL1.pressed(onL1);
@@ -346,13 +352,24 @@ void usercontrol(void) {
   Controller.ButtonB.pressed(onB);
   Controller.ButtonY.pressed(onY);
   Controller.ButtonDown.pressed(onDown);
+  float a1 = 0;
+  float a3 = 0;
   while (1) {
-    LeftMotor.setVelocity(Controller.Axis3.position()+Controller.Axis1.position(), percent);
-  LeftMotor2.setVelocity(Controller.Axis3.position()+Controller.Axis1.position(), percent);
-  LeftMotor3.setVelocity(Controller.Axis3.position()+Controller.Axis1.position(), percent);
-  RightMotor.setVelocity(Controller.Axis3.position()-Controller.Axis1.position(), percent);
-  RightMotor2.setVelocity(Controller.Axis3.position()-Controller.Axis1.position(), percent);
-  RightMotor3.setVelocity(Controller.Axis3.position()-Controller.Axis1.position(), percent);
+    a1 = Controller.Axis1.position();
+    a3 = Controller.Axis3.position();
+    if (a3<5 && a3>-5){
+      a3 = 0;
+    }
+    if (a1<5 && a1>-5){
+      a1 = 0;
+    }
+
+    LeftMotor.setVelocity(a3+a1, percent);
+  LeftMotor2.setVelocity(a3+a1, percent);
+  LeftMotor3.setVelocity(a3+a1, percent);
+  RightMotor.setVelocity(a3-a1, percent);
+  RightMotor2.setVelocity(a3-a1, percent);
+  RightMotor3.setVelocity(a3-a1, percent);
     LeftMotor.spin(forward);
     LeftMotor2.spin(forward);
     LeftMotor3.spin(forward);
@@ -380,3 +397,6 @@ int main() {
     wait(100, msec);
   }
 }
+
+
+
