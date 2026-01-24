@@ -52,8 +52,9 @@ void drive_test(){
   Intake.spin(fwd, 600, rpm);
   chassis.turn_to_angle(89);
   Scraper.set(true);
-  chassis.drive_distance(6);
   chassis.set_drive_exit_conditions(0.5, 0, 660);
+  chassis.drive_distance(6);
+  odom_constants();
   thread shoot1 = thread(shooterLongDelay);
   chassis.drive_distance(-13.8);
   while (Shooter.isSpinning()){
