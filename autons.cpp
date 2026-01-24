@@ -1,5 +1,5 @@
 #include "vex.h"
-#include <thread>
+#include <thread> // important - lets us do 2 things at once
 // this is right long plus middle only
 /**
  * Resets the constants for auton movement.
@@ -11,15 +11,15 @@
 
 void default_constants(){
   // Each constant set is in the form of (maxVoltage, kP, kI, kD, startI).
-  chassis.set_drive_constants(10, 1.5, 0, 10, 0);
+  chassis.set_drive_constants(12, 1.5, 0, 10, 0);
   chassis.set_heading_constants(6, .4, 0, 1, 0);
   chassis.set_turn_constants(12, .4, .03, 3, 15);
   chassis.set_swing_constants(12, .3, .001, 2, 15);
 
   // Each exit condition set is in the form of (settle_error, settle_time, timeout).
-  chassis.set_drive_exit_conditions(0.5, 0, 1500);
-  chassis.set_turn_exit_conditions(0.5, 0, 1000);
-  chassis.set_swing_exit_conditions(0.5, 300, 1000);
+  chassis.set_drive_exit_conditions(1, 450, 1500);
+  chassis.set_turn_exit_conditions(0.7, 50, 1000);
+  chassis.set_swing_exit_conditions(0.7, 300, 1000);
 }
 
 /**
@@ -34,41 +34,76 @@ void odom_constants(){
   chassis.drive_max_voltage = 12;
   chassis.drive_settle_error = 3;
   chassis.boomerang_lead = .5;
-  chassis.drive_min_voltage = 10;
+  chassis.drive_min_voltage = 6;
 }
 
-void shooterLongDelay(){
+void shooterLongDelay(){ // thread function
   wait(400, msec);
+  Descore.set(true);
   Shooter.spin(fwd, 600, rpm);
   wait(900, msec);
   Shooter.stop();
+  Descore.set(false);
 }
 /**
  * The expected behavior is to return to the start position.
  */
 
-void drive_test(){
-  chassis.drive_distance(19);
+ // slot 4 code here
+   /*chassis.drive_distance(19.5); // to disp
   Intake.spin(fwd, 600, rpm);
-  chassis.turn_to_angle(89);
+  chassis.turn_to_angle(89); // turn to disp
   Scraper.set(true);
-  chassis.set_drive_exit_conditions(0.5, 0, 660);
+    chassis.set_drive_exit_conditions(0.5, 0, 660);
   chassis.drive_distance(6);
-  odom_constants();
+odom_constants();
   thread shoot1 = thread(shooterLongDelay);
   chassis.drive_distance(-13.8);
   while (Shooter.isSpinning()){
     wait(5, msec);
   }
-  chassis.drive_distance(1);
-  chassis.left_swing_to_angle(218);
+  Scraper.set(false);
+  chassis.drive_distance(1); //detach from long
+  chassis.left_swing_to_angle(218); //swing to first 3 
   chassis.drive_distance(12);
   chassis.turn_to_angle(180);
-  chassis.drive_distance(19);
-  wait(100, msec);
-  chassis.turn_to_angle(135);
+  chassis.drive_distance(21); // 2nd 3 here
+  Scraper.set(true);//trap ball
+  wait(100, msec);//intake delay
+  chassis.turn_to_angle(135);//
   chassis.drive_distance(-10);
   Shooter.spin(fwd, 600, rpm);
+  LeftMotor.setStopping(hold);
+  LeftMotor2.setStopping(hold);
+  LeftMotor3.setStopping(hold);
+  RightMotor.setStopping(hold);
+  RightMotor2.setStopping(hold);
+  RightMotor3.setStopping(hold); */
+
+void drive_test(){
+  chassis.drive_distance(19); // to disp
+  Intake.spin(fwd, 600, rpm);
+  chassis.turn_to_angle(-90); // turn to disp
+  Scraper.set(true);
+  chassis.set_drive_exit_conditions(0.5, 0, 660);
+  chassis.drive_distance(6);
+  odom_constants();
+  chassis.drive_distance(-13.8);
+  Shooter.spin(fwd, 600, rpm);
+  chassis.drive_distance(6);
+  chassis.turn_to_angle(135);
+  chassis.drive_distance(-7);
+  Descore.set(true);
+  chassis.turn_to_angle(90);
+  chassis.drive_distance(6);
+  LeftMotor.stop(hold);
+  LeftMotor2.stop(hold);
+  LeftMotor3.stop(hold);
+  RightMotor.stop(hold);
+  RightMotor2.stop(hold);
+  RightMotor3.stop(hold);
+
+  
 
 }
 
