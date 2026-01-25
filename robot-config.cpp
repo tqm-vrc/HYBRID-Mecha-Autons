@@ -22,8 +22,8 @@ inertial Inertial17 = inertial(PORT15);
 
 controller Controller = controller();
 
-digital_out Scraper = digital_out(Brain.ThreeWirePort.F);
-digital_out Descore = digital_out(Brain.ThreeWirePort.H);
+digital_out Scraper = digital_out(Brain.ThreeWirePort.H);
+digital_out Descore = digital_out(Brain.ThreeWirePort.F);
 digital_out MidDescore = digital_out(Brain.ThreeWirePort.G);
 
 competition Competition;
