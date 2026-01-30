@@ -13,13 +13,13 @@ void default_constants(){
   // Each constant set is in the form of (maxVoltage, kP, kI, kD, startI).
   chassis.set_drive_constants(12, 1.5, 0, 10, 0); // 1.5 kp, 10 kd
   chassis.set_heading_constants(6, .4, 0, 1, 0);
-  chassis.set_turn_constants(12, .6, 0, 5.5, 15); // .4 kp, 3 kd
+  chassis.set_turn_constants(12, .4, 0, 3, 15); // .4 kp, 3 kd
   chassis.set_swing_constants(12, .3, .001, 2, 15);
 
   // Each exit condition set is in the form of (settle_error, settle_time, timeout).
-  chassis.set_drive_exit_conditions(0.2, 10, 800);
-  chassis.set_turn_exit_conditions(0.2, 10, 800);
-  chassis.set_swing_exit_conditions(0.2, 10, 800);
+  chassis.set_drive_exit_conditions(0.3, 100, 800);
+  chassis.set_turn_exit_conditions(0.3, 10, 800);
+  chassis.set_swing_exit_conditions(0.3, 10, 1100);
 }
 
 /**
@@ -38,12 +38,18 @@ void odom_constants(){
 }
 
 void shooterLongDelay(){ // thread function
-  wait(550, msec);
-  Descore.set(true);
+  wait(650, msec);
   Shooter.spin(fwd, 600, rpm);
   wait(1100, msec);
   Shooter.stop();
-  Descore.set(false);
+
+}
+
+void shooterLongDelay2(){ // thread function
+  wait(650, msec);
+  Shooter.spin(fwd, 600, rpm);
+
+
 }
 /**
  * The expected behavior is to return to the start position.
@@ -115,37 +121,61 @@ void scraperDelay1(){
   wait(300, msec);
   Scraper.set(false);
 }
+
+void middleScoring(){
+  wait(100, msec);
+  Shooter.spin(reverse, 480, rpm);
+  Intake.spin(fwd, 480, rpm); 
+  wait(400, msec);
+  Shooter.stop();
+}
+
 void drive_test(){
   odom_constants();
-
  // distances in units of 2 inches for gear ratio reasons
-  chassis.drive_distance(14);
+  chassis.drive_distance(13);
   Scraper.set(true);
   Intake.spin(fwd, 600, rpm);
   chassis.turn_to_angle(90);
   chassis.drive_distance(8);
-  wait(500, msec);
+  wait(280, msec);
   thread s1 = thread(shooterLongDelay);
-  chassis.drive_distance(-13.8);
+  chassis.drive_min_voltage = 11.8;
+  chassis.set_drive_exit_conditions(0.2, 100, 1200);
+  chassis.drive_distance(-14);
+  chassis.drive_min_voltage = 10;
   Scraper.set(false);
-  wait(1500, msec);
-  chassis.left_swing_to_angle(219);
-  chassis.turn_to_angle(222); // why very slow
+  wait(1000, msec);
+  chassis.left_swing_to_angle(230); // tuning needed
   thread scr1 = thread(scraperDelay1);
-  chassis.drive_distance(10);
+  chassis.set_drive_exit_conditions(0.2, 0, 1000);
+  chassis.drive_distance(12.25);
   chassis.turn_to_angle(180);
-   chassis.set_drive_exit_conditions(0.2, 10, 2000);
-  chassis.drive_distance(22);
-   chassis.set_drive_exit_conditions(0.2, 10, 800);
+   chassis.set_drive_exit_conditions(0.2, 0, 2000); // 
+  chassis.drive_distance(20.9);
+   chassis.set_drive_exit_conditions(0.2, 0, 800);
   wait(300, msec);
   chassis.turn_to_angle(135);
-  chassis.drive_distance(-4);
-  Intake.spin(reverse, 480, rpm);
-  wait(100, msec);
-  Intake.spin(fwd, 480, rpm);
-  Shooter.spin(reverse, 480, rpm);
-  wait(700, msec);
-  Shooter.stop();
+  chassis.set_drive_exit_conditions(0.3, 100, 100); 
+  thread mid1 = thread(middleScoring);
+  chassis.drive_distance(-4.5); // not realistic just ramming with pace
+  wait(300, msec);
+  chassis.set_drive_exit_conditions(0.3, 100, 800);
+  chassis.set_drive_exit_conditions(0.2, 100, 2000);
+  chassis.turn_to_angle(140);
+  chassis.drive_distance(22);
+  chassis.turn_to_angle(90);
+  Scraper.set(true);
+  chassis.set_drive_exit_conditions(0.2, 100, 800);
+  chassis.drive_distance(14);
+  wait(300, msec);
+  thread s2 = thread(shooterLongDelay2);
+  chassis.drive_min_voltage = 11.8;
+  chassis.set_drive_exit_conditions(0.2, 100, 1200);
+  chassis.drive_distance(-24);
+  chassis.drive_min_voltage = 10;
+  Scraper.set(false);
+  wait(1200, msec);
 }
 
 /**
