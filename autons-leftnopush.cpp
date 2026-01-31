@@ -17,7 +17,7 @@ void default_constants(){
   chassis.set_swing_constants(12, .3, .001, 2, 15);
 
   // Each exit condition set is in the form of (settle_error, settle_time, timeout).
-  chassis.set_drive_exit_conditions(1, 450, 1500);
+  chassis.set_drive_exit_conditions(1, 50, 1000);
   chassis.set_turn_exit_conditions(0.7, 50, 1000);
   chassis.set_swing_exit_conditions(0.7, 300, 1000);
 }
@@ -80,28 +80,60 @@ odom_constants();
   RightMotor2.setStopping(hold);
   RightMotor3.setStopping(hold); */
 
-void drive_test(){
-  chassis.drive_distance(19); // to disp
-  Intake.spin(fwd, 600, rpm);
-  chassis.turn_to_angle(-90); // turn to disp
+void scraperFirst(){
+  wait(750, msec);
   Scraper.set(true);
-  chassis.set_drive_exit_conditions(0.5, 0, 660);
+}
+
+void drive_test(){
+  odom_constants();
+ // distances in units of 2 inches for gear ratio reasons
+ Scraper.set(true);
+ chassis.drive_distance(15);
+  Intake.spin(fwd, 600, rpm);
+  chassis.turn_to_angle(-90);
+  chassis.drive_distance(9);// into disp
+  wait(280, msec);
+  chassis.turn_to_angle(-90);
+  thread s1 = thread(shooterLongDelay);
+  chassis.drive_min_voltage = 11.8;
+  chassis.set_drive_exit_conditions(0.2, 100, 1200);
+  chassis.drive_distance(-14);
+  chassis.drive_min_voltage = 10;
+  Scraper.set(false);
+  wait(1000, msec);
+  Intake.spin(fwd, 600, rpm);
+  chassis.set_drive_exit_conditions(0, 0, 40);
+  chassis.drive_distance(10); // pace turn
+  odom_constants();
+   chassis.set_swing_exit_conditions(0.7, 300, 2500);
+  chassis.right_swing_to_angle(120);
+  thread scr1 = thread(scraperFirst); //has to change to 135 due to relative, this was piecewisecoded
+  chassis.drive_distance(8.5);
+  chassis.turn_to_angle(-55);
+  chassis.drive_distance(-8);
+  Shooter.spin(reverse, 480, rpm);
+
+
+/* 
+  chassis.set_drive_exit_conditions(0.5, 0, 900);
   chassis.drive_distance(6);
+  wait(130, msec)
   odom_constants();
   chassis.drive_distance(-13.8);
   Shooter.spin(fwd, 600, rpm);
+  wait(1400, msec);
   chassis.drive_distance(6);
-  chassis.turn_to_angle(135);
-  chassis.drive_distance(-7);
-  Descore.set(true);
-  chassis.turn_to_angle(90);
-  chassis.drive_distance(6);
+  chassis.turn_to_angle(-45);
+  chassis.drive_distance(-6);
+  chassis.turn_to_angle(-70);
+  chassis.drive_distance(-12);
   LeftMotor.stop(hold);
   LeftMotor2.stop(hold);
   LeftMotor3.stop(hold);
   RightMotor.stop(hold);
   RightMotor2.stop(hold);
-  RightMotor3.stop(hold);
+  RightMotor3.stop(hold); */
 
   
 
