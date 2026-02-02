@@ -38,7 +38,7 @@ void odom_constants(){
 }
 
 void shooterLongDelay(){ // thread function
-  wait(400, msec);
+  wait(550, msec);
   Descore.set(true);
   Shooter.spin(fwd, 600, rpm);
   wait(900, msec);
@@ -81,14 +81,14 @@ odom_constants();
   RightMotor3.setStopping(hold); */
 
 void scraperFirst(){
-  wait(750, msec);
+  wait(760, msec);
   Scraper.set(true);
 }
 
 void drive_test(){
   odom_constants();
  // distances in units of 2 inches for gear ratio reasons
- Scraper.set(true);
+ Scraper.set(true); // left no push
  chassis.drive_distance(15);
   Intake.spin(fwd, 600, rpm);
   chassis.turn_to_angle(-90);
@@ -101,16 +101,16 @@ void drive_test(){
   chassis.drive_distance(-14);
   chassis.drive_min_voltage = 10;
   Scraper.set(false);
-  wait(1000, msec);
+  wait(800, msec);
   Intake.spin(fwd, 600, rpm);
   chassis.set_drive_exit_conditions(0, 0, 40);
   chassis.drive_distance(10); // pace turn
   odom_constants();
-   chassis.set_swing_exit_conditions(0.7, 300, 2500);
+   chassis.set_swing_exit_conditions(0.7, 300, 1500);
   chassis.right_swing_to_angle(120);
   thread scr1 = thread(scraperFirst); //has to change to 135 due to relative, this was piecewisecoded
-  chassis.drive_distance(8.5);
-  chassis.turn_to_angle(-55);
+  chassis.drive_distance(9);
+  chassis.turn_to_angle(-58);
   chassis.drive_distance(-8);
   Shooter.spin(reverse, 480, rpm);
 
