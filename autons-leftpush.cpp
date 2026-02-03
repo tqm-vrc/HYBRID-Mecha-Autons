@@ -34,7 +34,7 @@ void odom_constants(){
   chassis.drive_max_voltage = 12;
   chassis.drive_settle_error = 3;
   chassis.boomerang_lead = .5;
-  chassis.drive_min_voltage = 6;
+  chassis.drive_min_voltage = 10;
 }
 
 void shooterLongDelay(){ // thread function
@@ -81,24 +81,26 @@ odom_constants();
   RightMotor3.setStopping(hold); */
 
 void drive_test(){
-  chassis.drive_distance(19.8); // to disp
+  chassis.drive_distance(16.3); 
+    Scraper.set(true);// to disp
   Descore.set(true);
   Intake.spin(fwd, 600, rpm);
   chassis.turn_to_angle(-90);
   Descore.set(false); 
-  Scraper.set(true);
   chassis.set_drive_exit_conditions(0.5, 0, 900);
-  chassis.drive_distance(6);
-  wait(130, msec)
+  chassis.drive_distance(10);
+  wait(400, msec);
   odom_constants();
   chassis.drive_distance(-13.8);
   Shooter.spin(fwd, 600, rpm);
   wait(1400, msec);
+  Scraper.set(false);
   chassis.drive_distance(6);
   chassis.turn_to_angle(-45);
-  chassis.drive_distance(-6);
-  chassis.turn_to_angle(-70);
+  chassis.drive_distance(-8);
+  chassis.turn_to_angle(-90);
   chassis.drive_distance(-12);
+  chassis.left_swing_to_angle(70);
   LeftMotor.stop(hold);
   LeftMotor2.stop(hold);
   LeftMotor3.stop(hold);
