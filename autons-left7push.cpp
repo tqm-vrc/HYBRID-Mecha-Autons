@@ -17,8 +17,8 @@ void default_constants(){
   chassis.set_swing_constants(12, .3, .001, 2, 15);
 
   // Each exit condition set is in the form of (settle_error, settle_time, timeout).
-  chassis.set_drive_exit_conditions(1, 450, 1500);
-  chassis.set_turn_exit_conditions(0.7, 50, 1000);
+  chassis.set_drive_exit_conditions(0.5, 300, 1200);
+  chassis.set_turn_exit_conditions(0.5, 50, 800);
   chassis.set_swing_exit_conditions(0.7, 300, 1000);
 }
 
@@ -38,7 +38,7 @@ void odom_constants(){
 }
 
 void shooterLongDelay(){ // thread function
-  wait(400, msec);
+  wait(600, msec);
   Descore.set(true);
   Shooter.spin(fwd, 600, rpm);
   wait(900, msec);
@@ -80,6 +80,11 @@ odom_constants();
   RightMotor2.setStopping(hold);
   RightMotor3.setStopping(hold); */
 
+
+  void scraperFirst(){
+  wait(760, msec);
+  Scraper.set(true);
+}
 void drive_test(){
   chassis.drive_distance(16.3); 
     Scraper.set(true);// to disp
@@ -89,24 +94,52 @@ void drive_test(){
   Descore.set(false); 
   chassis.set_drive_exit_conditions(0.5, 0, 900);
   chassis.drive_distance(10);
-  wait(400, msec);
+  wait(350, msec);
   odom_constants();
-  chassis.drive_distance(-13.8);
-  Shooter.spin(fwd, 600, rpm);
-  wait(1400, msec);
+  thread s1 = thread(shooterLongDelay);
+  chassis.drive_distance(-14);
+  wait(1200, msec);
+  Shooter.stop();
   Scraper.set(false);
-  chassis.drive_distance(6);
-  chassis.turn_to_angle(-45);
-  chassis.drive_distance(-8);
-  chassis.turn_to_angle(-90);
-  chassis.drive_distance(-12);
-  chassis.left_swing_to_angle(70);
-  LeftMotor.stop(hold);
-  LeftMotor2.stop(hold);
-  LeftMotor3.stop(hold);
-  RightMotor.stop(hold);
-  RightMotor2.stop(hold);
-  RightMotor3.stop(hold);
+ Intake.spin(fwd, 600, rpm);
+  chassis.set_drive_exit_conditions(0, 0, 40);
+  chassis.drive_distance(10); // pace turn
+  odom_constants();
+   chassis.set_swing_exit_conditions(0.7, 300, 1500);
+  chassis.right_swing_to_angle(120);
+  thread scr1 = thread(scraperFirst); //has to change to 135 due to relative, this was piecewisecoded
+  chassis.drive_distance(9);
+  chassis.turn_to_angle(-58);
+  chassis.set_drive_exit_conditions(0, 0, 1000);
+  chassis.drive_distance(-14);
+  Shooter.spin(reverse, 480, rpm);
+  wait(700, msec);
+  Shooter.stop();
+  chassis.set_drive_exit_conditions(0.5, 0, 1200);
+  chassis.set_turn_exit_conditions(0.5, 0, 800);
+  chassis.set_swing_exit_conditions(0.7, 0, 1000);
+  Descore.set(true);
+  chassis.drive_distance(12);
+  chassis.right_swing_to_angle(-115);
+    Descore.set(false);
+  chassis.drive_distance(-15);
+  Descore.set(true);
+  wait(10, msec);
+  Descore.set(false);
+  chassis.turn_to_angle(-75);
+  chassis.drive_distance(-2);
+  LeftMotor.setStopping(hold);
+  LeftMotor2.setStopping(hold);
+  LeftMotor3.setStopping(hold);
+  RightMotor.setStopping(hold);
+  RightMotor2.setStopping(hold);
+  RightMotor3.setStopping(hold);
+  LeftMotor.stop();
+  LeftMotor2.stop();
+  LeftMotor3.stop();
+  RightMotor.stop();
+  RightMotor2.stop();
+  RightMotor3.stop();
 
   
 
