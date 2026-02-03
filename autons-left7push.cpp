@@ -86,6 +86,7 @@ odom_constants();
   Scraper.set(true);
 }
 void drive_test(){
+  odom_constants();
   chassis.drive_distance(16.3); 
     Scraper.set(true);// to disp
   Descore.set(true);
@@ -94,9 +95,12 @@ void drive_test(){
   Descore.set(false); 
   chassis.set_drive_exit_conditions(0.5, 0, 900);
   chassis.drive_distance(10);
-  wait(350, msec);
+  wait(330, msec);
   odom_constants();
   thread s1 = thread(shooterLongDelay);
+chassis.set_turn_exit_conditions(0.5, 0, 50);
+chassis.turn_to_angle(-90);
+chassis.set_turn_exit_conditions(0.5, 0, 800);
   chassis.drive_distance(-14);
   wait(1200, msec);
   Shooter.stop();
@@ -110,10 +114,11 @@ void drive_test(){
   thread scr1 = thread(scraperFirst); //has to change to 135 due to relative, this was piecewisecoded
   chassis.drive_distance(9);
   chassis.turn_to_angle(-58);
+  wait(50, msec);
   chassis.set_drive_exit_conditions(0, 0, 1000);
   chassis.drive_distance(-14);
   Shooter.spin(reverse, 480, rpm);
-  wait(700, msec);
+  wait(900, msec);
   Shooter.stop();
   chassis.set_drive_exit_conditions(0.5, 0, 1200);
   chassis.set_turn_exit_conditions(0.5, 0, 800);
@@ -122,7 +127,7 @@ void drive_test(){
   chassis.drive_distance(12);
   chassis.right_swing_to_angle(-115);
     Descore.set(false);
-  chassis.drive_distance(-15);
+  chassis.drive_distance(-13);
   Descore.set(true);
   wait(10, msec);
   Descore.set(false);
