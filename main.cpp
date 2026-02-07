@@ -351,7 +351,6 @@ void usercontrol(void) {
   Controller.ButtonL2.pressed(onL2);
   Controller.ButtonB.pressed(onB);
   Controller.ButtonY.pressed(onY);
-  Controller.ButtonDown.pressed(onDown);
   float a1 = 0;
   float a3 = 0;
   while (1) {
@@ -363,7 +362,13 @@ void usercontrol(void) {
     if (a1<5 && a1>-5){
       a1 = 0;
     }
-
+  if (Controller.ButtonDown.pressing){
+  MidDescore.set(true);
+  }
+  else{
+  MidDescore.set(false);
+  }
+    
     LeftMotor.setVelocity(a3+a1, percent);
   LeftMotor2.setVelocity(a3+a1, percent);
   LeftMotor3.setVelocity(a3+a1, percent);
